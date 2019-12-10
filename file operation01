@@ -1,0 +1,124 @@
+Action()
+{
+   char *file1="C:\\sample file\\list.text";
+   int thinktime=10;
+   long filename1;
+	lr_start_transaction("1_welcome");
+	web_reg_find("Text=Welcome To LoanIQ", 
+		LAST);
+	
+	web_url("LoanIQ", 
+		"URL=http://192.168.1.105:7001/LoanIQ", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=", 
+		"Snapshot=t14.inf", 
+		"Mode=HTML", 
+		LAST);
+   lr_end_transaction("1_welcome",LR_AUTO);
+   lr_think_time("{thinktime}");
+	lr_start_transaction("2_personal banking");
+
+	web_reg_find("Text=Welcome To LoanIQ", 
+		LAST);
+
+		web_reg_save_param("JSESSIONID","LB=JSESSIONID=","RB=\"",LAST);
+
+	web_url("login.jsp", 
+		"URL=http://192.168.1.105:7001/LoanIQ/login.jsp", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=http://192.168.1.105:7001/LoanIQ/", 
+		"Snapshot=t15.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("2_personal banking",LR_AUTO);
+
+	lr_think_time({thinktime});
+
+	lr_start_transaction("3_login");
+
+	web_reg_find("Text=LoanIQ: Customerhome", 
+		LAST);
+
+	web_submit_data("Login", 
+		"Action=http://192.168.1.105:7001/LoanIQ/Login?JSESSIONID={JSESSIONID}", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"RecContentType=text/html", 
+		"Referer=http://192.168.1.105:7001/LoanIQ/login.jsp", 
+		"Snapshot=t16.inf", 
+		"Mode=HTML", 
+		ITEMDATA, 
+		"Name=accno", "Value={idname}", ENDITEM, 
+		"Name=password", "Value=welcome", ENDITEM, 
+		"Name=x", "Value=32", ENDITEM, 
+		"Name=y", "Value=19", ENDITEM, 
+		LAST);
+
+	filename1=fopen(file1,"w");
+	fprintf(filename1,"%s",lr_eval_string("{JSESSIONID}"));
+	fclose(filename1);
+	lr_end_transaction("3_login",LR_AUTO);
+
+	lr_think_time({thinktime});
+
+	lr_start_transaction("4_accounts");
+
+	web_reg_find("Text=LoanIQ: Accounts", 
+		LAST);
+
+	web_url("accounts.jsp", 
+		"URL=http://192.168.1.105:7001/LoanIQ/accounts.jsp", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=http://192.168.1.105:7001/LoanIQ/Login?JSESSIONID={JSESSIONID}", 
+		"Snapshot=t17.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("4_accounts",LR_AUTO);
+
+	lr_think_time({thinktime});
+
+	lr_start_transaction("5_summary");
+
+	web_reg_find("Text=LoanIQ: Account Summary", 
+		LAST);
+
+	web_url("AccountSummary.jsp", 
+		"URL=http://192.168.1.105:7001/LoanIQ/AccountSummary.jsp", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=http://192.168.1.105:7001/LoanIQ/accounts.jsp", 
+		"Snapshot=t18.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("5_summary",LR_AUTO);
+
+	lr_think_time({thinktime});
+
+	lr_start_transaction("6_logout");
+
+	web_reg_find("Text=LoanIQ : Logout", 
+		LAST);
+
+	web_url("Logout.jsp", 
+		"URL=http://192.168.1.105:7001/LoanIQ/Logout.jsp", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=http://192.168.1.105:7001/LoanIQ/AccountSummary.jsp", 
+		"Snapshot=t19.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("6_logout",LR_AUTO);
+	return 0;
+}
